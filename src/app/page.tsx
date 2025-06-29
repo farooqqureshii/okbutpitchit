@@ -16,7 +16,10 @@ export type Slide = {
 
 const ChartSlide = dynamic(() => import("./components/ChartSlide"), { ssr: false });
 const MediaEmbed = dynamic(() => import("./components/MediaEmbed"), { ssr: false });
-const ExportPPTX = dynamic(() => import("./components/ExportPPTX"), { ssr: false });
+const ExportPPTX = dynamic(() => import("./components/ExportPPTX"), { 
+  ssr: false,
+  loading: () => <div className="w-24 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+});
 const PitchMode = dynamic(() => import("./components/PitchMode"), { ssr: false });
 
 // Demo deck fallback
