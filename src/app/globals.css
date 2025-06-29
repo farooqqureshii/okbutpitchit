@@ -1,26 +1,111 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-foreground: #171717;
+  --color-background: #ffffff;
+  --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  --animate-fade-in: fadeIn 0.6s ease-out;
+  --animate-slide-in: slideInFromBottom 0.7s ease-out;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    color: var(--color-foreground);
+    background: var(--color-background);
+    font-family: var(--font-family-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .animate-fadein {
+    animation: var(--animate-fade-in);
+  }
+
+  .animate-in {
+    animation-fill-mode: both;
+  }
+
+  .slide-in-from-bottom-4 {
+    animation: var(--animate-slide-in);
+  }
+
+  .border-3 {
+    border-width: 3px;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  /* Smooth transitions */
+  button, input, select, textarea {
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Gradient text support */
+  .bg-clip-text {
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .text-transparent {
+    color: transparent;
+  }
+
+  .graph-paper {
+    background-color: #ffffff;
+    background-image:
+      linear-gradient(rgba(128, 128, 128, 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(128, 128, 128, 0.2) 1px, transparent 1px);
+    background-size: 2rem 2rem;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
 }
