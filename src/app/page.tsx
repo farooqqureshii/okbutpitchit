@@ -16,7 +16,7 @@ export type Slide = {
 
 const ChartSlide = dynamic(() => import("./components/ChartSlide"), { ssr: false });
 const MediaEmbed = dynamic(() => import("./components/MediaEmbed"), { ssr: false });
-const ExportPPTX = dynamic(() => import("./components/ExportPPTX"), { 
+const ExportButton = dynamic(() => import("./components/ExportButton"), { 
   ssr: false,
   loading: () => <div className="w-24 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
 });
@@ -881,7 +881,7 @@ export default function Home() {
               Pitch It Now
             </button>
             
-            <ExportPPTX slides={deckToShow} theme={theme} />
+            <ExportButton slides={deckToShow} theme={theme} />
             
             <button
               className="text-neutral-600 hover:text-neutral-800 font-semibold py-2 px-5 rounded-lg text-sm transition-colors border border-neutral-300 hover:bg-neutral-100"
