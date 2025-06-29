@@ -21,14 +21,6 @@ const nextConfig: NextConfig = {
         buffer: false,
         util: false,
       };
-      
-      // Ignore Node.js modules on client side
-      const { IgnorePlugin } = require('webpack');
-      config.plugins.push(
-        new IgnorePlugin({
-          resourceRegExp: /^(node:fs|node:https|node:http|node:path|node:os|node:crypto|node:stream|node:util|node:buffer|node:url|node:zlib|node:net|node:tls|node:assert)$/,
-        })
-      );
     }
     return config;
   },
