@@ -22,49 +22,6 @@ const ExportButton = dynamic(() => import("./components/ExportButton"), {
 });
 const PitchMode = dynamic(() => import("./components/PitchMode"), { ssr: false });
 
-// Demo deck fallback
-const demoSlides: Slide[] = [
-  {
-    title: "Vibe Draw",
-    text: "Turn your roughest sketches into stunning 3D worlds with Vibe Draw, the AI-powered cursor for 3D modeling.",
-    bullets: ["Revolutionary AI-powered 3D modeling", "Transform sketches into professional models", "Perfect for designers, architects, and creators"]
-  },
-  {
-    title: "The Problem",
-    text: "3D modeling is complex, time-consuming, and requires years of training. Most creative ideas never make it to 3D because the tools are too difficult.",
-    bullets: ["Traditional 3D software has steep learning curves", "Hours of work for simple models", "Creative bottleneck for non-technical users"]
-  },
-  {
-    title: "Market Opportunity",
-    text: "The 3D modeling market is exploding with AR/VR growth",
-    chart: {
-      type: 'line',
-      data: {
-        labels: ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'May 2024'],
-        datasets: [{
-          label: 'Monthly Revenue',
-          data: [500, 1200, 2100, 4200, 8000],
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-          fill: true,
-          tension: 0.4
-        }]
-      },
-      title: "50% Monthly Revenue Growth"
-    }
-  },
-  {
-    title: "Our Solution",
-    text: "AI-powered cursor that understands your intent and creates 3D models from simple sketches",
-    bullets: ["Draw anywhere, get 3D models instantly", "No technical knowledge required", "Professional results in minutes, not hours", "Built-in collaboration and sharing"]
-  },
-  {
-    title: "What's Next",
-    text: "Scale to become the Figma of 3D modeling",
-    bullets: ["Launch enterprise features", "Expand AI model capabilities", "Build marketplace for 3D assets", "Series A funding to accelerate growth"]
-  }
-];
-
 const steps = [
   { label: "Repo", icon: "repo" },
   { label: "Theme", icon: "theme" },
@@ -99,8 +56,8 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  const deckToShow = (slides && slides.length > 0) ? slides : demoSlides;
-  const isDemo = !slides || slides.length === 0;
+  const deckToShow = slides && slides.length > 0 ? slides : [];
+  const hasSlides = slides && slides.length > 0;
 
   // Auto-advance progress bar during processing
   useEffect(() => {
@@ -656,7 +613,7 @@ export default function Home() {
                 }
                 
                 const groqData = await groqRes.json();
-                const finalSlides = addCustomSlides(groqData.slides || demoSlides);
+                const finalSlides = addCustomSlides(groqData.slides || []);
 
                 setSlides(finalSlides);
                 setProgress(100);
@@ -665,10 +622,8 @@ export default function Home() {
                 setTimeout(() => setStep(4), 1000);
               } catch (e: any) {
                 console.error('Generation error:', e);
-                setError(`Oops! ${e.message || 'Something went wrong'}. Don't worry - we've prepared a demo deck for you to explore!`);
-                
-                const finalDemoSlides = addCustomSlides(demoSlides);
-                setSlides(finalDemoSlides);
+                setError(`Oops! ${e.message || 'Something went wrong'}. Please try again.`);
+                setSlides(null);
 
                 setProgress(100);
                 setTimeout(() => setStep(4), 1000);
@@ -739,8 +694,48 @@ export default function Home() {
 
   // Clean slide display
   function ResultStep() {
-    const isDemo = !slides || slides.length === 0;
+    const hasSlides = slides && slides.length > 0;
     const [currentSlide, setCurrentSlide] = useState(0);
+    
+    // If no slides were generated, show error message
+    if (!hasSlides) {
+      return (
+        <section className="flex flex-col items-center justify-center min-h-screen py-6 sm:py-8">
+          <div className="text-center max-w-2xl mx-auto px-4">
+            <div className="mb-8">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-black mb-4 text-neutral-900">
+                Failed to Generate Deck
+              </h1>
+              <p className="text-lg text-neutral-600 mb-6">
+                {error || "Something went wrong while generating your pitch deck. Please try again."}
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-4 justify-center">
+              <button
+                className="px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl shadow-md hover:scale-105 transition-all duration-300"
+                onClick={() => {
+                  setStep(0);
+                  setRepoUrl("");
+                  setSlides(null);
+                  setError(null);
+                  setCustomChartData("");
+                  setMediaEmbed("");
+                  setProgress(0);
+                }}
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </section>
+      );
+    }
     
     return (
       <section className="flex flex-col items-center justify-start w-full min-h-screen py-6 sm:py-8">
@@ -748,18 +743,9 @@ export default function Home() {
           <h1 className="text-3xl font-black mb-2 text-neutral-900">
             Your Deck is Ready!
           </h1>
-          {isDemo ? (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-2xl mx-auto">
-              <div className="text-blue-800 text-sm font-semibold mb-1">Demo Mode</div>
-              <div className="text-blue-700 text-xs">
-                {error ? error : "We've created a sample deck for you. Add your GitHub repo and API keys to generate your real deck!"}
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-neutral-600">
-              Your personalized pitch deck is ready to impress!
-            </p>
-          )}
+          <p className="text-sm text-neutral-600">
+            Your personalized pitch deck is ready to impress!
+          </p>
         </div>
         
         {/* Clean slide viewer */}
