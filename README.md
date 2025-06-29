@@ -1,4 +1,4 @@
-# okbutpitchit
+# 💵 okbutpitchit
 
 Generate beautiful, modern, SaaS-quality pitch decks from any public GitHub repository in seconds.
 
