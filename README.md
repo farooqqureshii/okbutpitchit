@@ -16,7 +16,6 @@ Generate beautiful, modern, SaaS-quality pitch decks from any public GitHub repo
 - **Instant pitch mode** (fullscreen, PowerPoint-style UI)
 - **Theme selector** (Modern, Classic, Bold)
 - **Settings** (tweak tone, add custom chart)
-- **Always shows a demo deck if APIs fail**
 
 ## Getting Started
 
